@@ -19,11 +19,13 @@ const SecretForm = ({ onSuccess }) => {
 
       const currentEnv = getCurrentEnvironment();
       const result = await secretsApi.createSecret(values.name, values.value, currentEnv);
-      
-      setSuccess(`Secret "${result.name}" created successfully in ${result.environment}!${result.nameWasSanitized ? ' (name was sanitized)' : ''}`);
+
+      setSuccess(
+        `Secret "${result.name}" created successfully in ${result.environment}!${result.nameWasSanitized ? ' (name was sanitized)' : ''}`
+      );
       form.resetFields();
       setShowValue(false);
-      
+
       if (onSuccess) {
         onSuccess(result.name);
       }
@@ -70,12 +72,7 @@ const SecretForm = ({ onSuccess }) => {
         />
       )}
 
-      <Form
-        form={form}
-        layout="vertical"
-        onFinish={handleSubmit}
-        autoComplete="off"
-      >
+      <Form form={form} layout="vertical" onFinish={handleSubmit} autoComplete="off">
         <Form.Item
           label="Secret Name"
           name="name"
@@ -104,9 +101,7 @@ const SecretForm = ({ onSuccess }) => {
               visible: showValue,
               onVisibleChange: setShowValue,
             }}
-            iconRender={(visible) =>
-              visible ? <EyeOutlined /> : <EyeInvisibleOutlined />
-            }
+            iconRender={(visible) => (visible ? <EyeOutlined /> : <EyeInvisibleOutlined />)}
             disabled={loading}
             size="large"
           />

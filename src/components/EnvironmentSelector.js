@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Select, Space, Tag, Modal, Descriptions, Alert, Spin, message } from 'antd';
-import { SwapOutlined, InfoCircleOutlined, LockOutlined, CloudServerOutlined } from '@ant-design/icons';
+import {
+  SwapOutlined,
+  InfoCircleOutlined,
+  LockOutlined,
+  CloudServerOutlined,
+} from '@ant-design/icons';
 import { secretsApi, setCurrentEnvironment, getCurrentEnvironment } from '../services/api';
 import './EnvironmentSelector.css';
 
@@ -23,9 +28,9 @@ const EnvironmentSelector = ({ onEnvironmentChange }) => {
       setLoading(true);
       const data = await secretsApi.getEnvironments();
       setEnvironments(data);
-      
+
       // Set current environment
-      const current = data.find(e => e.id === selectedEnvId) || data[0];
+      const current = data.find((e) => e.id === selectedEnvId) || data[0];
       setSelectedEnv(current);
       setSelectedEnvId(current.id);
       setCurrentEnvironment(current.id);
@@ -38,7 +43,7 @@ const EnvironmentSelector = ({ onEnvironmentChange }) => {
   };
 
   const handleEnvironmentChange = (envId) => {
-    const newEnv = environments.find(e => e.id === envId);
+    const newEnv = environments.find((e) => e.id === envId);
     if (!newEnv) return;
 
     // Show confirmation modal
@@ -103,7 +108,9 @@ const EnvironmentSelector = ({ onEnvironmentChange }) => {
             }}
           >
             <LockOutlined style={{ marginRight: '6px' }} />
-            {selectedEnv.keyVaultUrl ? selectedEnv.keyVaultUrl.split('//')[1].split('.')[0] : selectedEnv.name}
+            {selectedEnv.keyVaultUrl
+              ? selectedEnv.keyVaultUrl.split('//')[1].split('.')[0]
+              : selectedEnv.name}
           </Tag>
 
           <Select
@@ -113,7 +120,7 @@ const EnvironmentSelector = ({ onEnvironmentChange }) => {
             size="large"
             suffixIcon={<SwapOutlined />}
           >
-            {environments.map(env => (
+            {environments.map((env) => (
               <Option key={env.id} value={env.id}>
                 <Space>
                   <span
@@ -167,9 +174,7 @@ const EnvironmentSelector = ({ onEnvironmentChange }) => {
               <Descriptions.Item label="Key Vault URL">
                 <code style={{ fontSize: '12px' }}>{switchingEnv.keyVaultUrl}</code>
               </Descriptions.Item>
-              <Descriptions.Item label="Description">
-                {switchingEnv.description}
-              </Descriptions.Item>
+              <Descriptions.Item label="Description">{switchingEnv.description}</Descriptions.Item>
             </Descriptions>
           </>
         )}

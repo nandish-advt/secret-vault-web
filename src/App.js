@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Layout, Tabs, ConfigProvider, message } from 'antd';
-import { KeyOutlined, FileTextOutlined, SwapOutlined  } from '@ant-design/icons';
+import { KeyOutlined, FileTextOutlined, SwapOutlined } from '@ant-design/icons';
 import Header from './components/Header';
 import SecretList from './components/SecretList';
 import SecretForm from './components/SecretForm';
@@ -33,7 +33,7 @@ function App() {
 
   const handleEnvironmentChange = (newEnvironment) => {
     message.success(`Switched to ${newEnvironment.name} environment`);
-    
+
     // Reset state when switching environments
     setSelectedSecret(null);
     setRefreshTrigger((prev) => prev + 1);
@@ -59,12 +59,7 @@ function App() {
 
         <Content className="app-content">
           <div className="content-container">
-            <Tabs
-              activeKey={activeTab}
-              onChange={setActiveTab}
-              size="large"
-              className="main-tabs"
-            >
+            <Tabs activeKey={activeTab} onChange={setActiveTab} size="large" className="main-tabs">
               <TabPane
                 tab={
                   <span>
@@ -99,7 +94,7 @@ function App() {
               <TabPane
                 tab={
                   <span>
-                    <SwapOutlined  />
+                    <SwapOutlined />
                     Environment Comparison
                   </span>
                 }

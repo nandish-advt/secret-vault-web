@@ -110,11 +110,7 @@ const UserProfile = () => {
   }
 
   return (
-    <Dropdown
-      menu={{ items: menuItems }}
-      trigger={['click']}
-      placement="bottomRight"
-    >
+    <Dropdown menu={{ items: menuItems }} trigger={['click']} placement="bottomRight">
       <div className="user-profile">
         <Space size="middle">
           {user.isDevelopment && (

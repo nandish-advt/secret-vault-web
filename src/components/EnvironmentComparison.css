@@ -134,23 +134,24 @@
   .environment-comparison-card .ant-statistic-content {
     font-size: 24px;
   }
-  
+
   .environment-comparison-card .ant-card-extra {
     margin-top: 12px;
   }
-  
+
   .ant-drawer-content-wrapper {
     width: 100% !important;
   }
 }
 
 /* Modified indicator */
-.environment-comparison-card .ant-tag[color="orange"] {
+.environment-comparison-card .ant-tag[color='orange'] {
   animation: pulse 2s ease-in-out infinite;
 }
 
 @keyframes pulse {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 1;
   }
   50% {
@@ -159,11 +160,11 @@
 }
 
 /* Copy button emphasis */
-.environment-comparison-card .ant-btn-primary[style*="faad14"] {
+.environment-comparison-card .ant-btn-primary[style*='faad14'] {
   box-shadow: 0 2px 8px rgba(250, 173, 20, 0.3);
 }
 
-.environment-comparison-card .ant-btn-primary[style*="faad14"]:hover {
+.environment-comparison-card .ant-btn-primary[style*='faad14']:hover {
   box-shadow: 0 4px 12px rgba(250, 173, 20, 0.5);
   transform: translateY(-1px);
 }

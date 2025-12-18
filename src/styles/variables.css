@@ -3,47 +3,48 @@
   /* Primary Colors */
   --primary-color: #018848;
   --secondary-color: #52c41a;
-  
+
   /* Header/Banner */
   --header-bg: #018848;
   --header-text: #ffffff;
   --header-accent: #018848;
-  
+
   /* Status Colors */
   --success-color: #52c41a;
   --warning-color: #faad14;
   --error-color: #f5222d;
   --info-color: #1890ff;
-  
+
   /* Environment Badges */
   --env-production: #f5222d;
   --env-staging: #faad14;
   --env-development: #52c41a;
   --env-default: #8c8c8c;
-  
+
   /* Typography */
-  --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+  --font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
   --font-size-lg: 20px;
   --font-size-base: 14px;
   --font-size-sm: 12px;
-  
+
   /* Spacing */
   --spacing-xs: 4px;
   --spacing-sm: 8px;
   --spacing-md: 16px;
   --spacing-lg: 24px;
   --spacing-xl: 32px;
-  
+
   /* Borders */
   --border-radius: 6px;
   --border-radius-lg: 12px;
   --border-color: #d9d9d9;
-  
+
   /* Shadows */
   --box-shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
   --box-shadow-md: 0 2px 8px rgba(0, 0, 0, 0.1);
   --box-shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.15);
-  
+
   /* Background Colors */
   --bg-color: #f0f2f5;
   --card-bg: #ffffff;
@@ -56,52 +57,53 @@
   --bg-color: #141414;
   --card-bg: #1f1f1f;
   --border-color: #434343;
-}/* CSS Variables - Can be overridden for different organizations */
+} /* CSS Variables - Can be overridden for different organizations */
 :root {
   /* Primary Colors */
   --primary-color: #1890ff;
   --secondary-color: #52c41a;
-  
+
   /* Header/Banner */
   --header-bg: #018848;
   --header-text: #ffffff;
   --header-accent: #018848;
-  
+
   /* Status Colors */
   --success-color: #52c41a;
   --warning-color: #faad14;
   --error-color: #f5222d;
   --info-color: #1890ff;
-  
+
   /* Environment Badges */
   --env-production: #f5222d;
   --env-staging: #faad14;
   --env-development: #52c41a;
   --env-default: #8c8c8c;
-  
+
   /* Typography */
-  --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+  --font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
   --font-size-lg: 20px;
   --font-size-base: 14px;
   --font-size-sm: 12px;
-  
+
   /* Spacing */
   --spacing-xs: 4px;
   --spacing-sm: 8px;
   --spacing-md: 16px;
   --spacing-lg: 24px;
   --spacing-xl: 32px;
-  
+
   /* Borders */
   --border-radius: 6px;
   --border-radius-lg: 12px;
   --border-color: #d9d9d9;
-  
+
   /* Shadows */
   --box-shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
   --box-shadow-md: 0 2px 8px rgba(0, 0, 0, 0.1);
   --box-shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.15);
-  
+
   /* Background Colors */
   --bg-color: #f0f2f5;
   --card-bg: #ffffff;

@@ -1,7 +1,9 @@
 import axios from 'axios';
 
 // Single API base URL
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://hackathon-backend-b5dtfzggg7a3bvfk.eastus-01.azurewebsites.net';
+const API_BASE_URL =
+  process.env.REACT_APP_API_URL ||
+  'https://hackathon-backend-b5dtfzggg7a3bvfk.eastus-01.azurewebsites.net';
 
 // Current selected environment
 let currentEnvironmentId = localStorage.getItem('selectedEnvironment') || 'prod';
@@ -54,7 +56,7 @@ export const secretsApi = {
   getAllSecrets: async (environmentId = null) => {
     const env = environmentId || currentEnvironmentId;
     const response = await api.get('/api/Secrets', {
-      params: { env }
+      params: { env },
     });
     return response.data;
   },
@@ -63,7 +65,7 @@ export const secretsApi = {
   getSecret: async (name, environmentId = null) => {
     const env = environmentId || currentEnvironmentId;
     const response = await api.get(`/api/Secrets/${encodeURIComponent(name)}`, {
-      params: { env }
+      params: { env },
     });
     return response.data;
   },
@@ -71,10 +73,7 @@ export const secretsApi = {
   // Create or update secret
   createSecret: async (name, value, environmentId = null) => {
     const env = environmentId || currentEnvironmentId;
-    const response = await api.post('/api/Secrets', 
-      { name, value },
-      { params: { env } }
-    );
+    const response = await api.post('/api/Secrets', { name, value }, { params: { env } });
     return response.data;
   },
 
@@ -82,7 +81,7 @@ export const secretsApi = {
   deleteSecret: async (name, environmentId = null) => {
     const env = environmentId || currentEnvironmentId;
     const response = await api.delete(`/api/Secrets/${encodeURIComponent(name)}`, {
-      params: { env }
+      params: { env },
     });
     return response.data;
   },
@@ -90,7 +89,7 @@ export const secretsApi = {
   // Compare two environments
   compareEnvironments: async (env1, env2) => {
     const response = await api.get('/api/Secrets/compare', {
-      params: { env1, env2 }
+      params: { env1, env2 },
     });
     return response.data;
   },
@@ -100,7 +99,7 @@ export const secretsApi = {
     const response = await api.post('/api/Secrets/copy', {
       secretName,
       sourceEnv,
-      targetEnv
+      targetEnv,
     });
     return response.data;
   },
@@ -110,7 +109,7 @@ export const secretsApi = {
     const response = await api.post('/api/Secrets/copy-multiple', {
       secretNames,
       sourceEnv,
-      targetEnv
+      targetEnv,
     });
     return response.data;
   },
@@ -119,7 +118,7 @@ export const secretsApi = {
   // Get audit logs
   getAuditLogs: async (page = 1, pageSize = 20) => {
     const response = await api.get('/api/Secrets/audit', {
-      params: { page, pageSize }
+      params: { page, pageSize },
     });
     return response.data;
   },
@@ -127,7 +126,7 @@ export const secretsApi = {
   // Get audit logs for specific secret
   getSecretAuditLogs: async (name, limit = 10) => {
     const response = await api.get(`/api/Secrets/audit/secret/${encodeURIComponent(name)}`, {
-      params: { limit }
+      params: { limit },
     });
     return response.data;
   },
@@ -135,6 +134,49 @@ export const secretsApi = {
   // Get total audit count
   getAuditCount: async () => {
     const response = await api.get('/api/Secrets/audit/count');
+    return response.data;
+  },
+
+  // Get secret versions
+  getSecretVersions: async (name, environmentId = null) => {
+    const env = environmentId || currentEnvironmentId;
+    console.log(`Getting versions for secret "${name}" from environment "${env}"`);
+
+    const response = await api.get(`/api/Secrets/${encodeURIComponent(name)}/versions`, {
+      params: { env },
+    });
+
+    console.log('Versions received:', response.data);
+    return response.data;
+  },
+
+  // Get specific secret version
+  getSecretVersion: async (name, version, environmentId = null) => {
+    const env = environmentId || currentEnvironmentId;
+    console.log(`Getting secret "${name}" version "${version}" from environment "${env}"`);
+
+    const response = await api.get(`/api/Secrets/${encodeURIComponent(name)}/versions/${version}`, {
+      params: { env },
+    });
+
+    console.log('Version received:', response.data);
+    return response.data;
+  },
+
+  // Restore secret version
+  restoreSecretVersion: async (name, version, environmentId = null) => {
+    const env = environmentId || currentEnvironmentId;
+    console.log(`Restoring secret "${name}" version "${version}" in environment "${env}"`);
+
+    const response = await api.post(
+      `/api/Secrets/${encodeURIComponent(name)}/versions/${version}/restore`,
+      null,
+      {
+        params: { env },
+      }
+    );
+
+    console.log('Version restored:', response.data);
     return response.data;
   },
 };

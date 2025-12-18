@@ -1,6 +1,26 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Descriptions, Button, Alert, Spin, Space, message, Typography, Tooltip, Modal } from 'antd';
-import { KeyOutlined, EyeOutlined, EyeInvisibleOutlined, CopyOutlined, CloseOutlined, ReloadOutlined, DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
+import {
+  Card,
+  Descriptions,
+  Button,
+  Alert,
+  Spin,
+  Space,
+  message,
+  Typography,
+  Tooltip,
+  Modal,
+} from 'antd';
+import {
+  KeyOutlined,
+  EyeOutlined,
+  EyeInvisibleOutlined,
+  CopyOutlined,
+  CloseOutlined,
+  ReloadOutlined,
+  DeleteOutlined,
+  ExclamationCircleOutlined,
+} from '@ant-design/icons';
 import { secretsApi, getCurrentEnvironment } from '../services/api';
 import './SecretDetail.css';
 
@@ -47,7 +67,9 @@ const SecretDetail = ({ secretName, onClose, onDelete }) => {
       icon: <ExclamationCircleOutlined />,
       content: (
         <div>
-          <p>Are you sure you want to delete <strong>"{secretName}"</strong>?</p>
+          <p>
+            Are you sure you want to delete <strong>"{secretName}"</strong>?
+          </p>
           <Alert
             message="Soft Delete"
             description="This will soft-delete the secret. It can be recovered within the Azure Key Vault retention period (typically 90 days)."
@@ -66,11 +88,11 @@ const SecretDetail = ({ secretName, onClose, onDelete }) => {
           const currentEnv = getCurrentEnvironment();
           await secretsApi.deleteSecret(secretName, currentEnv);
           message.success(`Secret "${secretName}" deleted successfully`);
-          
+
           if (onDelete) {
             onDelete(secretName);
           }
-          
+
           if (onClose) {
             onClose();
           }
@@ -168,9 +190,7 @@ const SecretDetail = ({ secretName, onClose, onDelete }) => {
           <Tooltip title="Refresh">
             <Button type="text" icon={<ReloadOutlined />} onClick={loadSecret} />
           </Tooltip>
-          {onClose && (
-            <Button type="text" icon={<CloseOutlined />} onClick={onClose} />
-          )}
+          {onClose && <Button type="text" icon={<CloseOutlined />} onClick={onClose} />}
         </Space>
       }
     >
@@ -211,12 +231,7 @@ const SecretDetail = ({ secretName, onClose, onDelete }) => {
               >
                 {showValue ? 'Hide' : 'Show'}
               </Button>
-              <Button
-                type="primary"
-                icon={<CopyOutlined />}
-                onClick={handleCopy}
-                size="small"
-              >
+              <Button type="primary" icon={<CopyOutlined />} onClick={handleCopy} size="small">
                 Copy Value
               </Button>
             </Space>

@@ -1,13 +1,30 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Card, Select, Button, Table, Tag, Space, Alert, Spin, message, Modal, 
-  Checkbox, Statistic, Row, Col, Input, Tooltip, Form, Drawer, Typography,
-  Divider
+import {
+  Card,
+  Select,
+  Button,
+  Table,
+  Tag,
+  Space,
+  Alert,
+  Spin,
+  message,
+  Modal,
+  Checkbox,
+  Statistic,
+  Row,
+  Col,
+  Input,
+  Tooltip,
+  Form,
+  Drawer,
+  Typography,
+  Divider,
 } from 'antd';
-import { 
-  SwapOutlined, 
+import {
+  SwapOutlined,
   SyncOutlined,
-  CopyOutlined, 
+  CopyOutlined,
   ExclamationCircleOutlined,
   CheckCircleOutlined,
   CloseCircleOutlined,
@@ -15,7 +32,7 @@ import {
   DownloadOutlined,
   EyeOutlined,
   EditOutlined,
-  InfoCircleOutlined
+  InfoCircleOutlined,
 } from '@ant-design/icons';
 import { secretsApi } from '../services/api';
 import './EnvironmentComparison.css';
@@ -34,24 +51,24 @@ const EnvironmentComparison = () => {
   const [selectedSecrets, setSelectedSecrets] = useState([]);
   const [copying, setCopying] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  
+
   // Preview & Edit
   const [previewDrawerVisible, setPreviewDrawerVisible] = useState(false);
   const [previewSecret, setPreviewSecret] = useState(null);
   const [previewLoading, setPreviewLoading] = useState(false);
-  
+
   // Edit before copy
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [editingSecrets, setEditingSecrets] = useState([]);
   const [editForm] = Form.useForm();
 
-// Copy confirmation modal state
-const [showCopyModal, setShowCopyModal] = useState(false);
-const [copyModalData, setCopyModalData] = useState(null);
+  // Copy confirmation modal state
+  const [showCopyModal, setShowCopyModal] = useState(false);
+  const [copyModalData, setCopyModalData] = useState(null);
 
-// Azure CLI Export
-const [azCliModalVisible, setAzCliModalVisible] = useState(false);
-const [azCliCommands, setAzCliCommands] = useState('');
+  // Azure CLI Export
+  const [azCliModalVisible, setAzCliModalVisible] = useState(false);
+  const [azCliCommands, setAzCliCommands] = useState('');
 
   useEffect(() => {
     loadEnvironments();
@@ -61,7 +78,7 @@ const [azCliCommands, setAzCliCommands] = useState('');
     try {
       const data = await secretsApi.getEnvironments();
       setEnvironments(data);
-      
+
       if (data.length >= 2) {
         setSourceEnv(data[0].id);
         setTargetEnv(data[1].id);
@@ -87,10 +104,10 @@ const [azCliCommands, setAzCliCommands] = useState('');
       setLoading(true);
       setComparison(null);
       setSelectedSecrets([]);
-      
+
       const data = await secretsApi.compareEnvironments(sourceEnv, targetEnv);
       setComparison(data);
-      
+
       message.success('Comparison completed');
     } catch (err) {
       message.error(`Failed to compare: ${err.response?.data?.message || err.message}`);
@@ -104,7 +121,7 @@ const [azCliCommands, setAzCliCommands] = useState('');
     try {
       setPreviewLoading(true);
       setPreviewDrawerVisible(true);
-      
+
       const data = await secretsApi.getSecret(secretName, sourceEnv);
       setPreviewSecret(data);
     } catch (err) {
@@ -122,15 +139,14 @@ const [azCliCommands, setAzCliCommands] = useState('');
     }
 
     console.log('🔵 Starting Edit Before Copy...');
-  console.log('Selected secrets:', selectedSecrets);
-  console.log('Source environment:', sourceEnv);
-
+    console.log('Selected secrets:', selectedSecrets);
+    console.log('Source environment:', sourceEnv);
 
     try {
-        message.loading({ content: 'Loading secrets...', key: 'loading', duration: 0 });
+      message.loading({ content: 'Loading secrets...', key: 'loading', duration: 0 });
 
       setLoading(true);
-      
+
       // Load all selected secrets
       const secretsData = [];
       for (const secretName of selectedSecrets) {
@@ -140,7 +156,7 @@ const [azCliCommands, setAzCliCommands] = useState('');
             name: data.name,
             originalValue: data.value,
             editedValue: data.value,
-            updatedOn: data.updatedOn
+            updatedOn: data.updatedOn,
           });
         } catch (err) {
           console.error(`Error loading secret ${secretName}:`, err);
@@ -148,14 +164,14 @@ const [azCliCommands, setAzCliCommands] = useState('');
       }
 
       setEditingSecrets(secretsData);
-      
+
       // Set initial form values
       const initialValues = {};
-      secretsData.forEach(secret => {
+      secretsData.forEach((secret) => {
         initialValues[secret.name] = secret.originalValue;
       });
       editForm.setFieldsValue(initialValues);
-      
+
       setEditModalVisible(true);
     } catch (err) {
       message.error('Failed to load secrets for editing');
@@ -167,40 +183,40 @@ const [azCliCommands, setAzCliCommands] = useState('');
   const handleConfirmEditedCopy = async () => {
     try {
       const values = await editForm.validateFields();
-      
+
       setCopying(true);
       setEditModalVisible(false);
 
-      const sourceEnvName = environments.find(e => e.id === sourceEnv)?.name;
-      const targetEnvName = environments.find(e => e.id === targetEnv)?.name;
+      const sourceEnvName = environments.find((e) => e.id === sourceEnv)?.name;
+      const targetEnvName = environments.find((e) => e.id === targetEnv)?.name;
 
       const copyPromises = editingSecrets.map(async (secret) => {
         const editedValue = values[secret.name];
-        
+
         try {
           // Copy with edited value
           await secretsApi.createSecret(secret.name, editedValue, targetEnv);
-          
+
           return {
             secretName: secret.name,
             success: true,
             wasEdited: editedValue !== secret.originalValue,
-            message: 'Secret copied successfully'
+            message: 'Secret copied successfully',
           };
         } catch (err) {
           return {
             secretName: secret.name,
             success: false,
-            message: err.response?.data?.message || err.message
+            message: err.response?.data?.message || err.message,
           };
         }
       });
 
       const results = await Promise.all(copyPromises);
-      
-      const successCount = results.filter(r => r.success).length;
-      const failureCount = results.filter(r => !r.success).length;
-      const editedCount = results.filter(r => r.wasEdited).length;
+
+      const successCount = results.filter((r) => r.success).length;
+      const failureCount = results.filter((r) => !r.success).length;
+      const editedCount = results.filter((r) => r.wasEdited).length;
 
       if (failureCount === 0) {
         message.success(
@@ -211,8 +227,12 @@ const [azCliCommands, setAzCliCommands] = useState('');
           title: 'Copy Completed with Errors',
           content: (
             <div>
-              <p><CheckCircleOutlined style={{ color: '#52c41a' }} /> Success: {successCount}</p>
-              <p><CloseCircleOutlined style={{ color: '#f5222d' }} /> Failed: {failureCount}</p>
+              <p>
+                <CheckCircleOutlined style={{ color: '#52c41a' }} /> Success: {successCount}
+              </p>
+              <p>
+                <CloseCircleOutlined style={{ color: '#f5222d' }} /> Failed: {failureCount}
+              </p>
             </div>
           ),
         });
@@ -230,77 +250,75 @@ const [azCliCommands, setAzCliCommands] = useState('');
     }
   };
 
-
-const handleCopySelected = () => {
-  if (selectedSecrets.length === 0) {
-    message.warning('Please select secrets to copy');
-    return;
-  }
-
-  const sourceEnvName = environments.find(e => e.id === sourceEnv)?.name || sourceEnv;
-  const targetEnvName = environments.find(e => e.id === targetEnv)?.name || targetEnv;
-
-  console.log('🔵 Copy Selected Started');
-  
-  setCopyModalData({
-    secrets: [...selectedSecrets],
-    sourceEnv,
-    targetEnv,
-    sourceEnvName,
-    targetEnvName
-  });
-  
-  setShowCopyModal(true);
-};
-
-const handleConfirmCopyModal = async () => {
-  if (!copyModalData) return;
-
-  try {
-    console.log('✅ User confirmed copy');
-    setShowCopyModal(false);
-    setCopying(true);
-    message.loading({ content: 'Copying secrets...', key: 'copying', duration: 0 });
-    
-    console.log('📤 Calling copyMultipleSecrets API...');
-    const result = await secretsApi.copyMultipleSecrets(
-      copyModalData.secrets,
-      copyModalData.sourceEnv,
-      copyModalData.targetEnv
-    );
-
-    console.log('📥 API Result:', result);
-
-    message.destroy('copying');
-
-    const successCount = result?.successCount || 0;
-    const failureCount = result?.failureCount || 0;
-
-    console.log(`✅ Success: ${successCount}, ❌ Failed: ${failureCount}`);
-
-    if (failureCount === 0) {
-      message.success(`Successfully copied ${successCount} secret(s)!`);
-    } else if (successCount === 0) {
-      message.error(`Failed to copy all ${failureCount} secret(s)`);
-    } else {
-      message.warning(`Copied ${successCount} secret(s), ${failureCount} failed`);
+  const handleCopySelected = () => {
+    if (selectedSecrets.length === 0) {
+      message.warning('Please select secrets to copy');
+      return;
     }
 
-    console.log('🔄 Refreshing comparison...');
-    await handleCompare();
-    setSelectedSecrets([]);
-    setCopyModalData(null);
-    
-  } catch (err) {
-    console.error('❌ Copy error:', err);
-    message.destroy('copying');
-    
-    const errorMessage = err.response?.data?.message || err.message || 'Unknown error';
-    message.error(`Failed to copy secrets: ${errorMessage}`);
-  } finally {
-    setCopying(false);
-  }
-};
+    const sourceEnvName = environments.find((e) => e.id === sourceEnv)?.name || sourceEnv;
+    const targetEnvName = environments.find((e) => e.id === targetEnv)?.name || targetEnv;
+
+    console.log('🔵 Copy Selected Started');
+
+    setCopyModalData({
+      secrets: [...selectedSecrets],
+      sourceEnv,
+      targetEnv,
+      sourceEnvName,
+      targetEnvName,
+    });
+
+    setShowCopyModal(true);
+  };
+
+  const handleConfirmCopyModal = async () => {
+    if (!copyModalData) return;
+
+    try {
+      console.log('✅ User confirmed copy');
+      setShowCopyModal(false);
+      setCopying(true);
+      message.loading({ content: 'Copying secrets...', key: 'copying', duration: 0 });
+
+      console.log('📤 Calling copyMultipleSecrets API...');
+      const result = await secretsApi.copyMultipleSecrets(
+        copyModalData.secrets,
+        copyModalData.sourceEnv,
+        copyModalData.targetEnv
+      );
+
+      console.log('📥 API Result:', result);
+
+      message.destroy('copying');
+
+      const successCount = result?.successCount || 0;
+      const failureCount = result?.failureCount || 0;
+
+      console.log(`✅ Success: ${successCount}, ❌ Failed: ${failureCount}`);
+
+      if (failureCount === 0) {
+        message.success(`Successfully copied ${successCount} secret(s)!`);
+      } else if (successCount === 0) {
+        message.error(`Failed to copy all ${failureCount} secret(s)`);
+      } else {
+        message.warning(`Copied ${successCount} secret(s), ${failureCount} failed`);
+      }
+
+      console.log('🔄 Refreshing comparison...');
+      await handleCompare();
+      setSelectedSecrets([]);
+      setCopyModalData(null);
+    } catch (err) {
+      console.error('❌ Copy error:', err);
+      message.destroy('copying');
+
+      const errorMessage = err.response?.data?.message || err.message || 'Unknown error';
+      message.error(`Failed to copy secrets: ${errorMessage}`);
+    } finally {
+      setCopying(false);
+    }
+  };
 
   const handleSwapEnvironments = () => {
     const temp = sourceEnv;
@@ -315,46 +333,46 @@ const handleConfirmCopyModal = async () => {
       message.warning('No comparison to export');
       return;
     }
-    
-    const sourceEnvName = environments.find(e => e.id === sourceEnv)?.name;
-    const targetEnvName = environments.find(e => e.id === targetEnv)?.name;
-    
+
+    const sourceEnvName = environments.find((e) => e.id === sourceEnv)?.name;
+    const targetEnvName = environments.find((e) => e.id === targetEnv)?.name;
+
     const report = {
       comparedAt: new Date().toISOString(),
       source: {
         id: sourceEnv,
-        name: sourceEnvName
+        name: sourceEnvName,
       },
       target: {
         id: targetEnv,
-        name: targetEnvName
+        name: targetEnvName,
       },
       summary: comparison.summary,
       onlyInSource: comparison.onlyInEnv1,
       onlyInTarget: comparison.onlyInEnv2,
-      inBoth: comparison.inBoth
+      inBoth: comparison.inBoth,
     };
-    
+
     const blob = new Blob([JSON.stringify(report, null, 2)], {
-      type: 'application/json'
+      type: 'application/json',
     });
-    
+
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
     a.download = `comparison-${sourceEnv}-vs-${targetEnv}-${Date.now()}.json`;
     a.click();
     URL.revokeObjectURL(url);
-    
+
     message.success('Comparison report exported');
   };
 
   const getSourceEnvColor = () => {
-    return environments.find(e => e.id === sourceEnv)?.color || '#1890ff';
+    return environments.find((e) => e.id === sourceEnv)?.color || '#1890ff';
   };
 
   const getTargetEnvColor = () => {
-    return environments.find(e => e.id === targetEnv)?.color || '#52c41a';
+    return environments.find((e) => e.id === targetEnv)?.color || '#52c41a';
   };
 
   const columns = [
@@ -369,7 +387,7 @@ const handleConfirmCopyModal = async () => {
             if (e.target.checked) {
               setSelectedSecrets([...selectedSecrets, record.name]);
             } else {
-              setSelectedSecrets(selectedSecrets.filter(s => s !== record.name));
+              setSelectedSecrets(selectedSecrets.filter((s) => s !== record.name));
             }
           }}
           disabled={record.status === 'onlyInTarget'}
@@ -405,8 +423,8 @@ const handleConfirmCopyModal = async () => {
         <Space>
           {record.status !== 'onlyInTarget' && (
             <Tooltip title="Preview secret value">
-              <Button 
-                size="small" 
+              <Button
+                size="small"
                 icon={<EyeOutlined />}
                 onClick={() => handlePreview(record.name)}
               />
@@ -422,23 +440,21 @@ const handleConfirmCopyModal = async () => {
 
     let data = [];
 
-    comparison.onlyInEnv1?.forEach(name => {
+    comparison.onlyInEnv1?.forEach((name) => {
       data.push({ name, status: 'onlyInSource', key: `source-${name}` });
     });
 
-    comparison.inBoth?.forEach(name => {
+    comparison.inBoth?.forEach((name) => {
       data.push({ name, status: 'inBoth', key: `both-${name}` });
     });
 
-    comparison.onlyInEnv2?.forEach(name => {
+    comparison.onlyInEnv2?.forEach((name) => {
       data.push({ name, status: 'onlyInTarget', key: `target-${name}` });
     });
 
     // Filter by search term
     if (searchTerm) {
-      data = data.filter(item => 
-        item.name.toLowerCase().includes(searchTerm.toLowerCase())
-      );
+      data = data.filter((item) => item.name.toLowerCase().includes(searchTerm.toLowerCase()));
     }
 
     return data;
@@ -446,17 +462,14 @@ const handleConfirmCopyModal = async () => {
 
   const selectAll = () => {
     if (!comparison) return;
-    
-    const copyable = [
-      ...(comparison.onlyInEnv1 || []),
-      ...(comparison.inBoth || [])
-    ];
-    
+
+    const copyable = [...(comparison.onlyInEnv1 || []), ...(comparison.inBoth || [])];
+
     // Apply search filter
-    const filtered = copyable.filter(name =>
+    const filtered = copyable.filter((name) =>
       searchTerm ? name.toLowerCase().includes(searchTerm.toLowerCase()) : true
     );
-    
+
     setSelectedSecrets(filtered);
   };
 
@@ -470,36 +483,35 @@ const handleConfirmCopyModal = async () => {
   };
 
   const generateAzCliCommands = async () => {
-  if (selectedSecrets.length === 0) {
-    message.warning('Please select secrets to generate commands');
-    return;
-  }
-
-  try {
-    message.loading({ content: 'Generating Azure CLI commands...', key: 'azcli', duration: 0 });
-    setLoading(true);
-
-    const targetEnvObj = environments.find(e => e.id === targetEnv);
-    const targetVaultName = targetEnvObj?.keyVaultUrl
-      ?.split('//')[1]
-      ?.split('.')[0] || 'your-keyvault-name';
-
-    // Load secret values from source
-    const secretsWithValues = [];
-    for (const secretName of selectedSecrets) {
-      try {
-        const data = await secretsApi.getSecret(secretName, sourceEnv);
-        secretsWithValues.push({
-          name: data.name,
-          value: data.value
-        });
-      } catch (err) {
-        console.error(`Error loading secret ${secretName}:`, err);
-      }
+    if (selectedSecrets.length === 0) {
+      message.warning('Please select secrets to generate commands');
+      return;
     }
 
-    // Generate PowerShell commands
-    let commands = `# ============================================================
+    try {
+      message.loading({ content: 'Generating Azure CLI commands...', key: 'azcli', duration: 0 });
+      setLoading(true);
+
+      const targetEnvObj = environments.find((e) => e.id === targetEnv);
+      const targetVaultName =
+        targetEnvObj?.keyVaultUrl?.split('//')[1]?.split('.')[0] || 'your-keyvault-name';
+
+      // Load secret values from source
+      const secretsWithValues = [];
+      for (const secretName of selectedSecrets) {
+        try {
+          const data = await secretsApi.getSecret(secretName, sourceEnv);
+          secretsWithValues.push({
+            name: data.name,
+            value: data.value,
+          });
+        } catch (err) {
+          console.error(`Error loading secret ${secretName}:`, err);
+        }
+      }
+
+      // Generate PowerShell commands
+      let commands = `# ============================================================
 # Azure Key Vault Secret Management Commands (PowerShell)
 # ============================================================
 # Generated: ${new Date().toLocaleString()}
@@ -517,20 +529,20 @@ const handleConfirmCopyModal = async () => {
 
 `;
 
-    secretsWithValues.forEach((secret, index) => {
-      // Escape single quotes in value for PowerShell
-      const escapedValue = secret.value.replace(/'/g, "''");
-      
-      commands += `# Secret ${index + 1}: ${secret.name}
+      secretsWithValues.forEach((secret, index) => {
+        // Escape single quotes in value for PowerShell
+        const escapedValue = secret.value.replace(/'/g, "''");
+
+        commands += `# Secret ${index + 1}: ${secret.name}
 az keyvault secret set \`
   --vault-name "${targetVaultName}" \`
   --name "${secret.name}" \`
   --value '${escapedValue}'
 
 `;
-    });
+      });
 
-    commands += `
+      commands += `
 # ============================================================
 # Useful Azure Key Vault Commands
 # ============================================================
@@ -709,39 +721,38 @@ az keyvault show \`
 # ============================================================
 `;
 
-    setAzCliCommands(commands);
-    setAzCliModalVisible(true);
-    message.destroy('azcli');
-    message.success('Azure CLI commands generated!');
+      setAzCliCommands(commands);
+      setAzCliModalVisible(true);
+      message.destroy('azcli');
+      message.success('Azure CLI commands generated!');
+    } catch (err) {
+      console.error('Error generating CLI commands:', err);
+      message.destroy('azcli');
+      message.error('Failed to generate commands');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  } catch (err) {
-    console.error('Error generating CLI commands:', err);
-    message.destroy('azcli');
-    message.error('Failed to generate commands');
-  } finally {
-    setLoading(false);
-  }
-};
+  const copyAzCliCommands = () => {
+    navigator.clipboard.writeText(azCliCommands);
+    message.success('Commands copied to clipboard!');
+  };
 
-const copyAzCliCommands = () => {
-  navigator.clipboard.writeText(azCliCommands);
-  message.success('Commands copied to clipboard!');
-};
+  const downloadAzCliCommands = () => {
+    const blob = new Blob([azCliCommands], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
 
-const downloadAzCliCommands = () => {
-  const blob = new Blob([azCliCommands], { type: 'text/plain' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  
-  const targetEnvObj = environments.find(e => e.id === targetEnv);
-  const targetVaultName = targetEnvObj?.keyVaultUrl?.split('//')[1]?.split('.')[0] || 'keyvault';
-  
-  a.download = `azcli-${targetVaultName}-${Date.now()}.ps1`;
-  a.click();
-  URL.revokeObjectURL(url);
-  message.success('Commands downloaded!');
-};
+    const targetEnvObj = environments.find((e) => e.id === targetEnv);
+    const targetVaultName = targetEnvObj?.keyVaultUrl?.split('//')[1]?.split('.')[0] || 'keyvault';
+
+    a.download = `azcli-${targetVaultName}-${Date.now()}.ps1`;
+    a.click();
+    URL.revokeObjectURL(url);
+    message.success('Commands downloaded!');
+  };
 
   return (
     <>
@@ -766,7 +777,7 @@ const downloadAzCliCommands = () => {
                   style={{ width: 200 }}
                   size="large"
                 >
-                  {environments.map(env => (
+                  {environments.map((env) => (
                     <Option key={env.id} value={env.id}>
                       <Space>
                         <span
@@ -802,7 +813,7 @@ const downloadAzCliCommands = () => {
                   style={{ width: 200 }}
                   size="large"
                 >
-                  {environments.map(env => (
+                  {environments.map((env) => (
                     <Option key={env.id} value={env.id}>
                       <Space>
                         <span
@@ -874,7 +885,9 @@ const downloadAzCliCommands = () => {
                   <Card>
                     <Statistic
                       title="Differences"
-                      value={comparison.summary.onlyInEnv1Count + comparison.summary.onlyInEnv2Count}
+                      value={
+                        comparison.summary.onlyInEnv1Count + comparison.summary.onlyInEnv2Count
+                      }
                       valueStyle={{ color: '#faad14' }}
                       prefix={<ExclamationCircleOutlined />}
                     />
@@ -901,26 +914,22 @@ const downloadAzCliCommands = () => {
                     <Button size="small" onClick={deselectAll}>
                       Deselect All
                     </Button>
-                    <Button
-                      icon={<DownloadOutlined />}
-                      onClick={exportComparison}
-                      size="small"
-                    >
+                    <Button icon={<DownloadOutlined />} onClick={exportComparison} size="small">
                       Export
                     </Button>
                     <Button
-        icon={<CodeOutlined />}
-        onClick={generateAzCliCommands}
-        size="small"
-        type="dashed"
-        disabled={selectedSecrets.length === 0}
-        style={{ 
-          borderColor: '#0078d4',
-          color: '#0078d4'
-        }}
-      >
-        Azure CLI
-      </Button>
+                      icon={<CodeOutlined />}
+                      onClick={generateAzCliCommands}
+                      size="small"
+                      type="dashed"
+                      disabled={selectedSecrets.length === 0}
+                      style={{
+                        borderColor: '#0078d4',
+                        color: '#0078d4',
+                      }}
+                    >
+                      Azure CLI
+                    </Button>
                     <Button
                       type="primary"
                       icon={<EditOutlined />}
@@ -955,8 +964,13 @@ const downloadAzCliCommands = () => {
                 message="Copy Options"
                 description={
                   <ul style={{ marginBottom: 0, paddingLeft: '20px' }}>
-                    <li><strong>Copy Selected:</strong> Copy secrets as-is without editing</li>
-                    <li><strong>Edit & Copy:</strong> Review and edit secret values before copying (recommended for environment-specific values)</li>
+                    <li>
+                      <strong>Copy Selected:</strong> Copy secrets as-is without editing
+                    </li>
+                    <li>
+                      <strong>Edit & Copy:</strong> Review and edit secret values before copying
+                      (recommended for environment-specific values)
+                    </li>
                     <li>Secrets marked "Only in Source" will be created in target</li>
                     <li>Secrets marked "In Both" will overwrite the target version</li>
                     <li>Secrets marked "Only in Target" cannot be copied</li>
@@ -998,9 +1012,11 @@ const downloadAzCliCommands = () => {
             <div>
               <Text strong>Name:</Text>
               <br />
-              <Paragraph code copyable>{previewSecret.name}</Paragraph>
+              <Paragraph code copyable>
+                {previewSecret.name}
+              </Paragraph>
             </div>
-            
+
             <div>
               <Text strong>Value:</Text>
               <br />
@@ -1008,7 +1024,7 @@ const downloadAzCliCommands = () => {
                 {previewSecret.value}
               </Paragraph>
             </div>
-            
+
             <div>
               <Text strong>Last Updated:</Text>
               <br />
@@ -1050,7 +1066,10 @@ const downloadAzCliCommands = () => {
           description={
             <div>
               <p>Review and modify secret values before copying to target environment.</p>
-              <p><strong>Tip:</strong> Edit environment-specific values like URLs, API endpoints, or connection strings.</p>
+              <p>
+                <strong>Tip:</strong> Edit environment-specific values like URLs, API endpoints, or
+                connection strings.
+              </p>
             </div>
           }
           type="info"
@@ -1058,13 +1077,10 @@ const downloadAzCliCommands = () => {
           style={{ marginBottom: '20px' }}
         />
 
-        <Form
-          form={editForm}
-          layout="vertical"
-        >
+        <Form form={editForm} layout="vertical">
           <div style={{ maxHeight: '500px', overflowY: 'auto' }}>
             {editingSecrets.map((secret, index) => (
-              <Card 
+              <Card
                 key={secret.name}
                 size="small"
                 style={{ marginBottom: '16px' }}
@@ -1088,10 +1104,14 @@ const downloadAzCliCommands = () => {
                     style={{ fontFamily: 'monospace' }}
                   />
                 </Form.Item>
-                
+
                 <div style={{ marginTop: '8px' }}>
                   <Text type="secondary" style={{ fontSize: '12px' }}>
-                    Original: <code style={{ fontSize: '11px' }}>{secret.originalValue.substring(0, 50)}{secret.originalValue.length > 50 ? '...' : ''}</code>
+                    Original:{' '}
+                    <code style={{ fontSize: '11px' }}>
+                      {secret.originalValue.substring(0, 50)}
+                      {secret.originalValue.length > 50 ? '...' : ''}
+                    </code>
                   </Text>
                 </div>
               </Card>
@@ -1102,185 +1122,202 @@ const downloadAzCliCommands = () => {
 
       {/* Copy Confirmation Modal - ADD THIS */}
       <Modal
-      title="Copy Secrets"
-      open={showCopyModal}
-      onOk={handleConfirmCopyModal}
-      onCancel={() => {
-        setShowCopyModal(false);
-        setCopyModalData(null);
-      }}
-      okText="Copy"
-      cancelText="Cancel"
-      confirmLoading={copying}
-      width={500}
-    >
-      {copyModalData && (
-        <div>
-          <p>
-            Copy <strong>{copyModalData.secrets.length}</strong> secret(s) without editing?
-          </p>
-          
-          <div style={{ 
-            marginTop: '16px',
-            padding: '16px', 
-            backgroundColor: '#fff7e6', 
-            border: '1px solid #ffd591',
-            borderRadius: '8px'
-          }}>
-            <div style={{ marginBottom: '12px', fontWeight: 600, fontSize: '14px' }}>
-              ⚠️ Direct Copy
+        title="Copy Secrets"
+        open={showCopyModal}
+        onOk={handleConfirmCopyModal}
+        onCancel={() => {
+          setShowCopyModal(false);
+          setCopyModalData(null);
+        }}
+        okText="Copy"
+        cancelText="Cancel"
+        confirmLoading={copying}
+        width={500}
+      >
+        {copyModalData && (
+          <div>
+            <p>
+              Copy <strong>{copyModalData.secrets.length}</strong> secret(s) without editing?
+            </p>
+
+            <div
+              style={{
+                marginTop: '16px',
+                padding: '16px',
+                backgroundColor: '#fff7e6',
+                border: '1px solid #ffd591',
+                borderRadius: '8px',
+              }}
+            >
+              <div style={{ marginBottom: '12px', fontWeight: 600, fontSize: '14px' }}>
+                ⚠️ Direct Copy
+              </div>
+
+              <div style={{ marginBottom: '8px' }}>
+                <strong>From:</strong>{' '}
+                <span
+                  style={{
+                    display: 'inline-block',
+                    padding: '4px 12px',
+                    backgroundColor: '#1890ff',
+                    color: '#fff',
+                    borderRadius: '4px',
+                    fontSize: '13px',
+                    marginLeft: '8px',
+                  }}
+                >
+                  {copyModalData.sourceEnvName}
+                </span>
+              </div>
+
+              <div style={{ marginBottom: '12px' }}>
+                <strong>To:</strong>{' '}
+                <span
+                  style={{
+                    display: 'inline-block',
+                    padding: '4px 12px',
+                    backgroundColor: '#52c41a',
+                    color: '#fff',
+                    borderRadius: '4px',
+                    fontSize: '13px',
+                    marginLeft: '8px',
+                  }}
+                >
+                  {copyModalData.targetEnvName}
+                </span>
+              </div>
+
+              <div
+                style={{
+                  marginTop: '12px',
+                  fontSize: '13px',
+                  lineHeight: '1.6',
+                }}
+              >
+                Values will be copied as-is. Existing secrets in target will be{' '}
+                <strong>overwritten</strong>.
+              </div>
             </div>
-            
-            <div style={{ marginBottom: '8px' }}>
-              <strong>From:</strong>{' '}
-              <span style={{ 
-                display: 'inline-block',
-                padding: '4px 12px',
-                backgroundColor: '#1890ff',
-                color: '#fff',
+
+            <div
+              style={{
+                marginTop: '16px',
+                padding: '12px',
+                backgroundColor: '#f0f0f0',
                 borderRadius: '4px',
-                fontSize: '13px',
-                marginLeft: '8px'
-              }}>
-                {copyModalData.sourceEnvName}
-              </span>
-            </div>
-            
-            <div style={{ marginBottom: '12px' }}>
-              <strong>To:</strong>{' '}
-              <span style={{ 
-                display: 'inline-block',
-                padding: '4px 12px',
-                backgroundColor: '#52c41a',
-                color: '#fff',
-                borderRadius: '4px',
-                fontSize: '13px',
-                marginLeft: '8px'
-              }}>
-                {copyModalData.targetEnvName}
-              </span>
-            </div>
-            
-            <div style={{ 
-              marginTop: '12px', 
-              fontSize: '13px',
-              lineHeight: '1.6'
-            }}>
-              Values will be copied as-is. Existing secrets in target will be <strong>overwritten</strong>.
+              }}
+            >
+              <strong>Secrets to copy:</strong>
+              <ul
+                style={{
+                  marginTop: '8px',
+                  marginBottom: '0',
+                  paddingLeft: '20px',
+                }}
+              >
+                {copyModalData.secrets.map((secret, idx) => (
+                  <li key={idx}>
+                    <code style={{ fontSize: '12px' }}>{secret}</code>
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
+        )}
+      </Modal>
 
-          <div style={{ 
-            marginTop: '16px',
-            padding: '12px',
-            backgroundColor: '#f0f0f0',
-            borderRadius: '4px'
-          }}>
-            <strong>Secrets to copy:</strong>
-            <ul style={{ 
-              marginTop: '8px',
-              marginBottom: '0',
-              paddingLeft: '20px'
-            }}>
-              {copyModalData.secrets.map((secret, idx) => (
-                <li key={idx}>
-                  <code style={{ fontSize: '12px' }}>{secret}</code>
+      {/* Azure CLI Commands Modal - ADD THIS */}
+      <Modal
+        title={
+          <Space>
+            <CodeOutlined style={{ color: '#0078d4' }} />
+            <span>Azure CLI PowerShell Commands</span>
+          </Space>
+        }
+        open={azCliModalVisible}
+        onCancel={() => setAzCliModalVisible(false)}
+        width={900}
+        footer={[
+          <Button key="close" onClick={() => setAzCliModalVisible(false)}>
+            Close
+          </Button>,
+          <Button key="copy" type="default" icon={<CopyOutlined />} onClick={copyAzCliCommands}>
+            Copy All
+          </Button>,
+          <Button
+            key="download"
+            type="primary"
+            icon={<DownloadOutlined />}
+            onClick={downloadAzCliCommands}
+          >
+            Download .ps1
+          </Button>,
+        ]}
+      >
+        <Space direction="vertical" style={{ width: '100%' }} size="large">
+          <Alert
+            message="Azure CLI PowerShell Commands"
+            description={
+              <div>
+                <p>
+                  Copy these commands and paste into your <strong>PowerShell terminal</strong> with
+                  Azure CLI installed.
+                </p>
+                <p style={{ marginBottom: 0 }}>
+                  Prerequisites: <code>az login</code> and appropriate Key Vault permissions.
+                </p>
+              </div>
+            }
+            type="info"
+            showIcon
+          />
+
+          <div
+            style={{
+              backgroundColor: '#1e1e1e',
+              padding: '16px',
+              borderRadius: '8px',
+              maxHeight: '500px',
+              overflowY: 'auto',
+              fontFamily: "'Consolas', 'Monaco', 'Courier New', monospace",
+            }}
+          >
+            <pre
+              style={{
+                margin: 0,
+                color: '#d4d4d4',
+                fontSize: '12px',
+                lineHeight: '1.6',
+                whiteSpace: 'pre-wrap',
+                wordBreak: 'break-all',
+              }}
+            >
+              {azCliCommands}
+            </pre>
+          </div>
+
+          <Alert
+            message="Quick Tips"
+            description={
+              <ul style={{ marginBottom: 0, paddingLeft: '20px' }}>
+                <li>
+                  Use <code>az login</code> before running commands
                 </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      )}
-    </Modal>
-
-    {/* Azure CLI Commands Modal - ADD THIS */}
-<Modal
-  title={
-    <Space>
-      <CodeOutlined style={{ color: '#0078d4' }} />
-      <span>Azure CLI PowerShell Commands</span>
-    </Space>
-  }
-  open={azCliModalVisible}
-  onCancel={() => setAzCliModalVisible(false)}
-  width={900}
-  footer={[
-    <Button key="close" onClick={() => setAzCliModalVisible(false)}>
-      Close
-    </Button>,
-    <Button 
-      key="copy" 
-      type="default"
-      icon={<CopyOutlined />}
-      onClick={copyAzCliCommands}
-    >
-      Copy All
-    </Button>,
-    <Button
-      key="download"
-      type="primary"
-      icon={<DownloadOutlined />}
-      onClick={downloadAzCliCommands}
-    >
-      Download .ps1
-    </Button>,
-  ]}
->
-  <Space direction="vertical" style={{ width: '100%' }} size="large">
-    <Alert
-      message="Azure CLI PowerShell Commands"
-      description={
-        <div>
-          <p>Copy these commands and paste into your <strong>PowerShell terminal</strong> with Azure CLI installed.</p>
-          <p style={{ marginBottom: 0 }}>
-            Prerequisites: <code>az login</code> and appropriate Key Vault permissions.
-          </p>
-        </div>
-      }
-      type="info"
-      showIcon
-    />
-
-    <div style={{
-      backgroundColor: '#1e1e1e',
-      padding: '16px',
-      borderRadius: '8px',
-      maxHeight: '500px',
-      overflowY: 'auto',
-      fontFamily: "'Consolas', 'Monaco', 'Courier New', monospace",
-    }}>
-      <pre style={{
-        margin: 0,
-        color: '#d4d4d4',
-        fontSize: '12px',
-        lineHeight: '1.6',
-        whiteSpace: 'pre-wrap',
-        wordBreak: 'break-all',
-      }}>
-        {azCliCommands}
-      </pre>
-    </div>
-
-    <Alert
-      message="Quick Tips"
-      description={
-        <ul style={{ marginBottom: 0, paddingLeft: '20px' }}>
-          <li>Use <code>az login</code> before running commands</li>
-          <li>Ensure you have <strong>Key Vault Secrets Officer</strong> role</li>
-          <li>Commands use backtick (`) for line continuation in PowerShell</li>
-          <li>Test with one secret first before bulk operations</li>
-          <li>Soft-deleted secrets can be recovered within 90 days</li>
-        </ul>
-      }
-      type="warning"
-      showIcon
-    />
-  </Space>
-</Modal>
+                <li>
+                  Ensure you have <strong>Key Vault Secrets Officer</strong> role
+                </li>
+                <li>Commands use backtick (`) for line continuation in PowerShell</li>
+                <li>Test with one secret first before bulk operations</li>
+                <li>Soft-deleted secrets can be recovered within 90 days</li>
+              </ul>
+            }
+            type="warning"
+            showIcon
+          />
+        </Space>
+      </Modal>
     </>
   );
 };
-
-
 
 export default EnvironmentComparison;
