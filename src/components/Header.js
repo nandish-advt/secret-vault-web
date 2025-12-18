@@ -1,5 +1,6 @@
 import React from 'react';
 import { Layout, Space } from 'antd';
+import { SafetyOutlined } from '@ant-design/icons';
 import EnvironmentSelector from './EnvironmentSelector';
 import UserProfile from './UserProfile';
 import { orgConfig } from '../styles/theme';
@@ -15,7 +16,8 @@ const Header = ({ onEnvironmentChange }) => {
           {orgConfig.logo ? (
             <img src={orgConfig.logo} alt="Logo" className="header-logo" />
           ) : (
-            <span className="header-icon">🔐</span>
+            <span className="header-icon">🔑</span>
+            // <SafetyOutlined className="header-icon" />
           )}
           <div className="header-text">
             <h1 className="header-title">{orgConfig.appName}</h1>

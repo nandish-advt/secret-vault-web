@@ -8,7 +8,7 @@ export const theme = {
   // Header/Banner Colors
   headerBackground: '#001529', // Dark blue (professional)
   headerTextColor: '#ffffff',
-  headerAccentColor: '#1890ff',
+  headerAccentColor: '#E6E6E6',
 
   // Status Colors
   successColor: '#52c41a', // Green
