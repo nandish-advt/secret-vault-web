@@ -1,38 +1,85 @@
-.App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
+.app-layout {
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  background-color: var(--bg-color);
 }
 
-.App-link {
-  color: #61dafb;
+.app-content {
+  padding: var(--spacing-lg);
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+.content-container {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.main-tabs {
+  background: white;
+  padding: 0 var(--spacing-lg);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--box-shadow-md);
+}
+
+.main-tabs .ant-tabs-nav {
+  margin-bottom: 0;
+}
+
+.main-tabs .ant-tabs-content {
+  padding: var(--spacing-lg);
+}
+
+.secrets-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-lg);
+  min-height: 600px;
+}
+
+.grid-item {
+  min-height: 600px;
+}
+
+.comparison-container {
+  min-height: 600px;
+}
+
+.audit-container {
+  min-height: 600px;
+}
+
+.app-footer {
+  text-align: center;
+  background-color: var(--header-bg);
+  color: var(--header-text);
+  padding: var(--spacing-lg);
+}
+
+.app-footer p {
+  margin: 0;
+  font-size: 14px;
+  opacity: 0.85;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .secrets-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
-  to {
-    transform: rotate(360deg);
+  
+  .grid-item:last-child {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 768px) {
+  .secrets-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .app-content {
+    padding: var(--spacing-md);
+  }
+  
+  .main-tabs {
+    padding: 0 var(--spacing-md);
   }
 }

@@ -1,0 +1,176 @@
+.environment-comparison-card {
+  height: 100%;
+}
+
+.environment-comparison-card .ant-card-body {
+  padding: var(--spacing-lg);
+}
+
+.environment-comparison-card .ant-statistic-title {
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.environment-comparison-card .ant-statistic-content {
+  font-size: 28px;
+  font-weight: 600;
+}
+
+.environment-comparison-card .ant-table-wrapper {
+  margin-top: 16px;
+}
+
+.environment-comparison-card code {
+  background-color: #f5f5f5;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 13px;
+}
+
+/* Search input in table header */
+.environment-comparison-card .ant-input-search {
+  border-radius: 6px;
+}
+
+/* Table row hover effect */
+.environment-comparison-card .ant-table-tbody > tr:hover {
+  background-color: #f5f5f5;
+}
+
+/* Checkbox column */
+.environment-comparison-card .ant-checkbox-wrapper {
+  margin: 0;
+}
+
+/* Action buttons in table */
+.environment-comparison-card .ant-btn-sm {
+  height: 28px;
+  padding: 0 8px;
+  font-size: 12px;
+}
+
+/* Drawer styles */
+.ant-drawer-body {
+  padding: var(--spacing-lg);
+}
+
+.ant-drawer-body .ant-typography {
+  margin-bottom: 8px;
+}
+
+/* Modal form styles */
+.ant-modal-body .ant-form-item {
+  margin-bottom: 16px;
+}
+
+.ant-modal-body .ant-card {
+  border-radius: 8px;
+}
+
+.ant-modal-body .ant-form-item-label > label {
+  font-weight: 600;
+}
+
+/* Edit modal textarea */
+.ant-modal-body textarea.ant-input {
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 13px;
+  resize: vertical;
+}
+
+/* Statistics cards */
+.environment-comparison-card .ant-statistic {
+  text-align: center;
+}
+
+.environment-comparison-card .ant-statistic-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+/* Alert box styles */
+.environment-comparison-card .ant-alert {
+  border-radius: 8px;
+}
+
+.environment-comparison-card .ant-alert ul {
+  margin-top: 8px;
+}
+
+/* Tag styles in table */
+.environment-comparison-card .ant-tag {
+  margin: 0;
+  font-size: 12px;
+  padding: 2px 8px;
+}
+
+/* Environment selection cards */
+.environment-comparison-card .ant-card-small > .ant-card-head {
+  padding: 12px 16px;
+  background-color: #fafafa;
+  border-bottom: 2px solid #e9ecef;
+}
+
+.environment-comparison-card .ant-card-small > .ant-card-body {
+  padding: 16px;
+}
+
+/* Button groups */
+.environment-comparison-card .ant-space-horizontal {
+  flex-wrap: wrap;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+  .environment-comparison-card .ant-col {
+    margin-bottom: 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .environment-comparison-card .ant-statistic-content {
+    font-size: 24px;
+  }
+  
+  .environment-comparison-card .ant-card-extra {
+    margin-top: 12px;
+  }
+  
+  .ant-drawer-content-wrapper {
+    width: 100% !important;
+  }
+}
+
+/* Modified indicator */
+.environment-comparison-card .ant-tag[color="orange"] {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* Copy button emphasis */
+.environment-comparison-card .ant-btn-primary[style*="faad14"] {
+  box-shadow: 0 2px 8px rgba(250, 173, 20, 0.3);
+}
+
+.environment-comparison-card .ant-btn-primary[style*="faad14"]:hover {
+  box-shadow: 0 4px 12px rgba(250, 173, 20, 0.5);
+  transform: translateY(-1px);
+}
+
+/* Smooth transitions */
+.environment-comparison-card .ant-btn,
+.environment-comparison-card .ant-card,
+.environment-comparison-card .ant-table-row {
+  transition: all 0.3s ease;
+}

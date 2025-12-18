@@ -1,0 +1,36 @@
+.user-profile {
+  cursor: pointer;
+  padding: 8px 12px;
+  border-radius: 8px;
+  transition: background-color 0.2s;
+}
+
+.user-profile:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.user-name {
+  color: var(--header-text);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.user-email {
+  color: var(--header-text);
+  opacity: 0.75;
+  font-size: 12px;
+  line-height: 1.2;
+}
+
+@media (max-width: 768px) {
+  .user-info {
+    display: none;
+  }
+}
