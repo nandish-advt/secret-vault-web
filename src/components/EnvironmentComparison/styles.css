@@ -123,29 +123,8 @@
   flex-wrap: wrap;
 }
 
-/* Responsive adjustments */
-@media (max-width: 1200px) {
-  .environment-comparison-card .ant-col {
-    margin-bottom: 16px;
-  }
-}
-
-@media (max-width: 768px) {
-  .environment-comparison-card .ant-statistic-content {
-    font-size: 24px;
-  }
-
-  .environment-comparison-card .ant-card-extra {
-    margin-top: 12px;
-  }
-
-  .ant-drawer-content-wrapper {
-    width: 100% !important;
-  }
-}
-
-/* Modified indicator */
-.environment-comparison-card .ant-tag[color='orange'] {
+/* Modified indicator in Edit Modal */
+.ant-modal-body .ant-tag[color='orange'] {
   animation: pulse 2s ease-in-out infinite;
 }
 
@@ -162,10 +141,21 @@
 /* Copy button emphasis */
 .environment-comparison-card .ant-btn-primary[style*='faad14'] {
   box-shadow: 0 2px 8px rgba(250, 173, 20, 0.3);
+  transition: all 0.3s ease;
 }
 
 .environment-comparison-card .ant-btn-primary[style*='faad14']:hover {
   box-shadow: 0 4px 12px rgba(250, 173, 20, 0.5);
+  transform: translateY(-1px);
+}
+
+/* Azure CLI button styling */
+.environment-comparison-card .ant-btn[style*='0078d4'] {
+  transition: all 0.3s ease;
+}
+
+.environment-comparison-card .ant-btn[style*='0078d4']:hover {
+  background-color: #f0f8ff !important;
   transform: translateY(-1px);
 }
 
@@ -174,4 +164,38 @@
 .environment-comparison-card .ant-card,
 .environment-comparison-card .ant-table-row {
   transition: all 0.3s ease;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+  .environment-comparison-card .ant-col {
+    margin-bottom: 16px;
+  }
+
+  .environment-comparison-card .ant-space-horizontal {
+    gap: 8px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .environment-comparison-card .ant-statistic-content {
+    font-size: 24px;
+  }
+
+  .environment-comparison-card .ant-card-extra {
+    margin-top: 12px;
+  }
+
+  .ant-drawer-content-wrapper {
+    width: 100% !important;
+  }
+
+  .environment-comparison-card .ant-space-horizontal > * {
+    width: 100%;
+  }
+
+  .environment-comparison-card .ant-btn {
+    width: 100%;
+    margin-bottom: 8px;
+  }
 }
